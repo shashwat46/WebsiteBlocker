@@ -7,9 +7,8 @@
 
 import Foundation
 
-
-struct BlockedSite: Identifiable {
+struct Website: Identifiable {
     let id = UUID()
     let url: String
-    var isEnabled: Bool
+    var isBlocked: Bool
 }

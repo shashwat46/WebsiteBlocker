@@ -10,9 +10,9 @@ import SwiftUI
 struct HomeView: View {
     
     @State private var websiteInput: String = ""
-    @State private var blockedWebsites: [BlockedSite] = [
-        BlockedSite(url: "facebook.com", isEnabled: true),
-        BlockedSite(url: "google.com", isEnabled: true)]
+    @State private var blockedWebsites: [Website] = [
+        Website(url: "facebook.com", isBlocked: true),
+        Website(url: "google.com", isBlocked: true)]
     
     var body: some View {
         VStack{
@@ -20,11 +20,13 @@ struct HomeView: View {
             Image(systemName: "globe")
                 .font(.largeTitle)
                 .foregroundColor(.blue)
+                .padding(.top)
             
             HStack{
-                TextField("Enter website (e.g. Google.com",
+                TextField("Enter website (e.g. Google.com)",
                           text: $websiteInput)
-                .padding()
+                .padding(.leading)
+                
                 Button {
                     
                 } label: {
@@ -32,7 +34,8 @@ struct HomeView: View {
                         .foregroundColor(.blue)
                         .font(.title2)
                 }
-                .padding()
+                .padding(.trailing)
+                .buttonStyle(BorderlessButtonStyle())
             }
             .padding(.top)
             
@@ -51,6 +54,7 @@ struct HomeView: View {
                         Image(systemName: "trash")
                             .foregroundColor(.red)
                     }
+                    .buttonStyle(BorderlessButtonStyle())
 
                 }
             }
@@ -59,6 +63,7 @@ struct HomeView: View {
         }
     }
 }
+
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
