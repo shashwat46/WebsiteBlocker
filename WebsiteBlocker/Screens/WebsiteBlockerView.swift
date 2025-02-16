@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeView: View {
+struct WebsiteBlockerView: View {
     
     @State private var websiteInput: String = ""
     @State private var blockedWebsites: [Website] = [
@@ -65,8 +65,8 @@ struct HomeView: View {
 }
 
 
-struct HomeView_Previews: PreviewProvider {
+struct WebsiteBlockerView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView()
+        WebsiteBlockerView()
     }
 }

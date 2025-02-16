@@ -9,18 +9,26 @@ import Foundation
 
 enum HostsFileError: Error {
     case invalidHostname(String)
+    case permissionDenied
+    case readFailure
+    case writeFailure
 }
 
 class HostsFileService {
     private let hostsFilePath: String
     private let blockMarker = "# Blocked by WebsiteBlockerApp"
     
-    init(hostsFilePath: String = "/etc/hosts") {
+    init(hostsFilePath: String = Constants.hostsFilePath) {
         self.hostsFilePath = hostsFilePath
     }
     
     func readHostsFile() throws -> String {
-        try String(contentsOfFile: hostsFilePath, encoding: .utf8)
+        do {
+            return try String(contentsOfFile: hostsFilePath, encoding: .utf8)
+        }
+        catch {
+            throw HostsFileError.readFailure
+        }
     }
     
 
@@ -54,7 +62,7 @@ class HostsFileService {
         try writeHostsFile(content: hostsContent)
     }
     
-    private func normalizeSite(_ site: String) throws -> String {
+     func normalizeSite(_ site: String) throws -> String {
 
         let cleaned = site.trimmingCharacters(in: .whitespaces)
         
@@ -76,6 +84,12 @@ class HostsFileService {
     
 
     private func writeHostsFile(content: String) throws {
-        try content.write(toFile: hostsFilePath, atomically: true, encoding: .utf8)
+        do {
+            try content.write(toFile: hostsFilePath, atomically: true, encoding: .utf8)
+            
+        }
+        catch {
+            throw HostsFileError.writeFailure
+        }
     }
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 struct Constants {
-    static let hostFilePath = "/etc/hosts"
+    static let hostsFilePath = "/etc/hosts"
     static let localhost    = "127.0.0.1"
     
     
