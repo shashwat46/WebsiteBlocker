@@ -1,0 +1,15 @@
+build/
+DerivedData/
+*.xcworkspace
+*.xcodeproj/project.xcworkspace
+*.xcodeproj/project.xcuserstate
+*.xccheckout
+*.xcodeproj/xcuserdata/
+
+WebsiteBlockerHelper/*
+!WebsiteBlockerHelper/Package.swift
+!WebsiteBlockerHelper/README.md
+!WebsiteBlockerHelper/Sources/
+!WebsiteBlockerHelper/Tests/
+
+Package.resolved
