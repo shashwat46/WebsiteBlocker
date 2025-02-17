@@ -12,84 +12,91 @@ enum HostsFileError: Error {
     case permissionDenied
     case readFailure
     case writeFailure
+    case helperToolNotFound(String)
+    case helperToolFailure(String)
 }
 
 class HostsFileService {
-    private let hostsFilePath: String
-    private let blockMarker = "# Blocked by WebsiteBlockerApp"
+    private let configFilePath: String
+    private let helperToolPath: String
     
-    init(hostsFilePath: String = Constants.hostsFilePath) {
-        self.hostsFilePath = hostsFilePath
+    init(helperToolName: String = "WebsiteBlockerHelper") {
+        // Get the path for the helper tool within the app bundle
+        if let path = Bundle.main.path(forResource: helperToolName, ofType: nil) {
+            self.helperToolPath = path
+        } else {
+            self.helperToolPath = ""
+        }
+        
+        // Temporary config file path for blocklist
+        let tempDir = FileManager.default.temporaryDirectory
+        self.configFilePath = tempDir.appendingPathComponent("blocklist.json").path
     }
     
-    func readHostsFile() throws -> String {
-        do {
-            return try String(contentsOfFile: hostsFilePath, encoding: .utf8)
-        }
-        catch {
-            throw HostsFileError.readFailure
-        }
+    func updateBlockedSites(sites: [String]) throws {
+        let normalizedSites = try sites.map { try normalizeSite($0) }
+        
+        let jsonData = try JSONEncoder().encode(normalizedSites)
+        try jsonData.write(to: URL(fileURLWithPath: configFilePath))
+        
+        try runHelperCommand(["--update", configFilePath])
     }
     
-
-    func updateHostsFile(with blockedSites: [String]) throws {
-        var hostsContent = try readHostsFile()
-        
-
-        let filteredLines = hostsContent
-            .components(separatedBy: .newlines)
-            .filter { !$0.contains(blockMarker) }
-        
-
-        hostsContent = filteredLines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
-        
-
-        var newEntries = [String]()
-        for site in blockedSites {
-            let normalized = try normalizeSite(site)
-            newEntries.append("127.0.0.1 \(normalized) \(blockMarker)")
-            newEntries.append("127.0.0.1 www.\(normalized) \(blockMarker)")
-        }
-        
-        
-        if !newEntries.isEmpty {
-            if !hostsContent.isEmpty {
-                hostsContent += "\n"
-            }
-            hostsContent += newEntries.joined(separator: "\n")
-        }
-        
-        try writeHostsFile(content: hostsContent)
+    func removeAllBlocking() throws {
+        try runHelperCommand(["--deactivate"])
     }
     
-     func normalizeSite(_ site: String) throws -> String {
-
+    func flushDNSCache() throws {
+        try runHelperCommand(["--flush-all"])
+    }
+    
+    func checkHelperInstallation() -> Bool {
+        return FileManager.default.isExecutableFile(atPath: helperToolPath)
+    }
+    
+    func normalizeSite(_ site: String) throws -> String {
         let cleaned = site.trimmingCharacters(in: .whitespaces)
         
-
         guard isValidHostname(cleaned) else {
             throw HostsFileError.invalidHostname(cleaned)
         }
         
-
         return cleaned.lowercased()
             .replacingOccurrences(of: "^www\\.", with: "", options: .regularExpression)
     }
     
-
     private func isValidHostname(_ hostname: String) -> Bool {
-        let pattern = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$"
+        let pattern = "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][a-zA-Z0-9-]*[A-Za-z0-9])$"
         return hostname.range(of: pattern, options: .regularExpression) != nil
     }
     
-
-    private func writeHostsFile(content: String) throws {
-        do {
-            try content.write(toFile: hostsFilePath, atomically: true, encoding: .utf8)
-            
+    private func runHelperCommand(_ arguments: [String]) throws {
+        if !FileManager.default.isExecutableFile(atPath: helperToolPath) {
+            throw HostsFileError.helperToolNotFound("Helper tool not found at \(helperToolPath)")
         }
-        catch {
-            throw HostsFileError.writeFailure
+        
+        let task = Process()
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/sudo")
+        task.arguments = arguments
+        
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        task.standardError = pipe
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            if task.terminationStatus != 0 {
+                let outputData = pipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: outputData, encoding: .utf8) ?? "Unknown error"
+                throw HostsFileError.helperToolFailure(output)
+            }
+        } catch let error as HostsFileError {
+            throw error
+        } catch {
+            throw HostsFileError.helperToolFailure("Failed to run helper tool: \(error.localizedDescription)")
         }
     }
 }
+

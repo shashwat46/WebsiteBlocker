@@ -7,8 +7,17 @@
 
 import Foundation
 
-struct Website: Identifiable {
-    let id = UUID()
-    let url: String
+struct Website: Identifiable, Equatable, Hashable {
+    var id = UUID()
+    var url: String
     var isBlocked: Bool
+    
+    static func == (lhs: Website, rhs: Website) -> Bool {
+        return lhs.url == rhs.url
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(url)
+    }
 }
+
