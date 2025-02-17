@@ -11,7 +11,7 @@ import SwiftUI
 struct WebsiteBlockerApp: App {
     var body: some Scene {
         WindowGroup {
-            HomeView()
+            WebsiteBlockerView()
         }
     }
 }
