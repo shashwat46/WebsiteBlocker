@@ -3,10 +3,10 @@
 I have created a website blocker for macOS as part of my internship 
 application to FocusMode. Here is my proposed solution:  
 
-## **Approach: Editing the `/etc/hosts` file on macOS and rerouting 
+## Approach: Editing the `/etc/hosts` file on macOS and rerouting 
 blocked URLs to localhost**  
 
-### **1. A SwiftUI app (WebsiteBlocker) that lets you add website URLs 
+### 1. A SwiftUI app (WebsiteBlocker) that lets you add website URLs 
 that you need to block**  
 It has a simple UI with the following components:  
 - A **textfield** to enter the URL and a button to add the URL to your 
@@ -18,7 +18,7 @@ buttons to:
 - **Buttons to flush `dscache`, run `killall mDNSResponder`, and remove 
 all entries**  
 
-### **2. A CLI Helper executable (WebsiteBlockerHelper)**  
+### 2. A CLI Helper executable (WebsiteBlockerHelper)**  
 - Runs terminal commands for the app to create, update, and delete entries 
 in `/etc/hosts`.  
 - The mac app writes the blocked URL entries to a json file at 
@@ -45,7 +45,7 @@ that **modifies the `/etc/hosts` file** on macOS to block websites.
 
 ## **Challenges associated with my approach:**  
 
-### **1. You need admin privileges to write to the `/etc/hosts` file with 
+### 1. You need admin privileges to write to the `/etc/hosts` file with 
 the CLI Helper**  
 - While that works pretty well if you’re manually doing it from the 
 terminal, it’s not easy to make your app run the scripts automatically.  
@@ -53,7 +53,7 @@ terminal, it’s not easy to make your app run the scripts automatically.
 CLI helper using **SMJobBless** and interact with the system through 
 **XPC**.  
 
-### **2. Even after writing to `/etc/hosts`, a system-wide block for the 
+### 2. Even after writing to `/etc/hosts`, a system-wide block for the 
 given websites isn’t guaranteed**  
 - My CLI helper did the job pretty well on the terminal, but on Safari, 
 websites like **Facebook, Instagram, and LinkedIn bypassed the block** if 
