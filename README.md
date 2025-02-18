@@ -5,8 +5,7 @@ application to FocusMode. Here is my proposed solution:
 
 ## Approach: Editing the `/etc/hosts` file on macOS and rerouting blocked URLs to localhost
 
-### 1. A SwiftUI app (WebsiteBlocker) that lets you add website URLs 
-that you need to block**  
+### 1. A SwiftUI app (WebsiteBlocker) that lets you add website URLs that you need to block 
 It has a simple UI with the following components:  
 - A **textfield** to enter the URL and a button to add the URL to your 
 blocklist  
@@ -17,7 +16,7 @@ buttons to:
 - **Buttons to flush `dscache`, run `killall mDNSResponder`, and remove 
 all entries**  
 
-### 2. A CLI Helper executable (WebsiteBlockerHelper)**  
+### 2. A CLI Helper executable (WebsiteBlockerHelper)  
 - Runs terminal commands for the app to create, update, and delete entries 
 in `/etc/hosts`.  
 - The mac app writes the blocked URL entries to a json file at 
@@ -44,16 +43,14 @@ that **modifies the `/etc/hosts` file** on macOS to block websites.
 
 ## **Challenges associated with my approach:**  
 
-### 1. You need admin privileges to write to the `/etc/hosts` file with 
-the CLI Helper**  
+### 1. You need admin privileges to write to the `/etc/hosts` file with the CLI Helper
 - While that works pretty well if you’re manually doing it from the 
 terminal, it’s not easy to make your app run the scripts automatically.  
 - You need to use **osascript** (proved unreliable for me) or bundle the 
 CLI helper using **SMJobBless** and interact with the system through 
 **XPC**.  
 
-### 2. Even after writing to `/etc/hosts`, a system-wide block for the 
-given websites isn’t guaranteed**  
+### 2. Even after writing to `/etc/hosts`, a system-wide block for the given websites isn’t guaranteed 
 - My CLI helper did the job pretty well on the terminal, but on Safari, 
 websites like **Facebook, Instagram, and LinkedIn bypassed the block** if 
 they were using DNS services like Cloudflare.  
@@ -86,8 +83,7 @@ block** for the websites you blocked.
 ### ❌ **What Doesn't Work Yet:**  
 - The **Mac app does not modify `/etc/hosts` in the background** (it does 
 not write to `blocklist.json` or `/etc/hosts`).  
-- On Safari, **some sites still load (e.g., Facebook, Instagram, 
-LinkedIn)** due to alternative DNS services or cache resolution.  
+- On Safari, **some sites still load (e.g., Facebook, Instagram, LinkedIn)** due to alternative DNS services or cache resolution. For e.g. Websites that use Cloudflare could bypass my solution easily.
 
 
 
@@ -151,16 +147,13 @@ which I currently do not have.
 - SMJobBless would’ve allowed me to **install my privileged CLI helper**.  
 - This process **requires code signing with an Apple Developer ID** and 
 hence, is infeasible for me.  
-- Also, setting up **XPC is complicated**, so I did not attempt it given 
-the time constraints.  
+- Also, setting up **XPC is complicated**, so I did not attempt it given the time constraints.  
 
 ### **4. Browser Extensions**  
-- Works but **didn’t feel like the best answer** since the assignment asks 
-for a **Mac app**.  
+- Works but **didn’t feel like the best answer** since the assignment asks for a **Mac app**.  
 
 ### **5. Proxy settings**  
-- Seemed like **something that will fail frequently** and will have to be 
-set up again and again.  
+- Seemed like **something that will fail frequently** and will have to be set up again and again.  
 
 
 
@@ -187,11 +180,9 @@ this submission.
 
 
 ## **Lesson Learnt:**  
-1. **Don’t do just about anything that LLMs suggest you to debug 
-problems.🫠**  
+1. **Don’t trust troubleshooting advice from LLMs🫠**  
 2. **Networking issues can be a nightmare to debug.**  
-3. **Always leave extra buffer time when working with system-level 
-configurations.**  
+3. **Always leave extra buffer time when working with system-level configurations.**  
 
 
 ## **Final Note:**  
