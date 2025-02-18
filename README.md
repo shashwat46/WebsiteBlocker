@@ -92,6 +92,39 @@ LinkedIn)** due to alternative DNS services or cache resolution.
 
 ---
 
+## **Building and Running the CLI Tool**
+
+### Prerequisites
+- Xcode 14.0 or later
+- macOS 12.0 or later
+
+### Steps to Build and Run:
+
+1. **Build the CLI Tool:**
+   ```bash
+   cd WebsiteBlockerHelper
+   swift build
+   ```
+
+2. **Create a blocklist.json file in your home directory:**
+   ```bash
+   echo '{"sites": ["facebook.com", "instagram.com"]}' > ~/blocklist.json
+   ```
+
+3. **Run the CLI Helper:**
+   ```bash
+   sudo .build/debug/WebsiteBlockerHelper --update
+   ```
+
+Note: The tool requires sudo privileges since it modifies the `/etc/hosts` file.
+
+### Available Commands:
+- `--update`: Updates the hosts file with blocked sites
+- `--remove`: Removes all blocked sites from hosts file
+- `--list`: Shows currently blocked sites
+
+---
+
 ## **Other approaches that I explored:**  
 
 ### **1. Using Network Extensions**  
