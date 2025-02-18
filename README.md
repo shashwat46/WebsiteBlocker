@@ -3,8 +3,7 @@
 I have created a website blocker for macOS as part of my internship 
 application to FocusMode. Here is my proposed solution:  
 
-## Approach: Editing the `/etc/hosts` file on macOS and rerouting 
-blocked URLs to localhost**  
+## Approach: Editing the `/etc/hosts` file on macOS and rerouting blocked URLs to localhost
 
 ### 1. A SwiftUI app (WebsiteBlocker) that lets you add website URLs 
 that you need to block**  
@@ -25,7 +24,7 @@ in `/etc/hosts`.
 `~/blocklist.json`, and the CLI helper reads from this file to add or 
 remove entries from the `/etc/hosts` file.  
 
----
+
 
 ## **Why did I choose this approach?**  
 
@@ -41,7 +40,7 @@ for code signing** to make the Network Extension method work. Hence, given
 the time constraint and scope of this assignment, I decided to make an app 
 that **modifies the `/etc/hosts` file** on macOS to block websites.  
 
----
+
 
 ## **Challenges associated with my approach:**  
 
@@ -69,7 +68,7 @@ using `sudo` on the first run of the app, after which the user would never
 have to bother with this.  
 - However, I was unable to implement this.  
 
----
+
 
 ## **Current Status**  
 
@@ -90,7 +89,16 @@ not write to `blocklist.json` or `/etc/hosts`).
 - On Safari, **some sites still load (e.g., Facebook, Instagram, 
 LinkedIn)** due to alternative DNS services or cache resolution.  
 
----
+
+
+## **Demo**  
+
+Here’s a GIF showcasing the UI of the WebsiteBlocker app in action:  
+
+![WebsiteBlocker UI](DemoMedia/WebsiteBlockerGIF.gif)  
+
+
+
 
 ## **Building and Running the CLI Tool**
 
@@ -123,7 +131,7 @@ Note: The tool requires sudo privileges since it modifies the `/etc/hosts` file.
 - `--remove`: Removes all blocked sites from hosts file
 - `--list`: Shows currently blocked sites
 
----
+
 
 ## **Other approaches that I explored:**  
 
@@ -154,7 +162,7 @@ for a **Mac app**.
 - Seemed like **something that will fail frequently** and will have to be 
 set up again and again.  
 
----
+
 
 ## **Additional Background:**  
 
@@ -176,7 +184,7 @@ After multiple rounds of **restarting my Mac, my other Windows laptop, and
 even my phone’s hotspot**, I could get the internet to work to complete 
 this submission.  
 
----
+
 
 ## **Lesson Learnt:**  
 1. **Don’t do just about anything that LLMs suggest you to debug 
@@ -185,7 +193,6 @@ problems.🫠**
 3. **Always leave extra buffer time when working with system-level 
 configurations.**  
 
----
 
 ## **Final Note:**  
 
@@ -198,7 +205,7 @@ figure this out.
 I’ll be really fortunate if I land this internship as I believe I’ll get 
 to **learn a lot under experienced iOS Devs**.  
 
----
+
 
 ## **TL;DR**  
 ✅ **CLI tool works** (blocks websites via `/etc/hosts`).  
